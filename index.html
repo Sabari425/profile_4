@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Profile Page for Admin Dashboard with dynamic updates">
+    <meta name="keywords" content="profile, dashboard, admin, user, responsive, boxicons">
+    <meta name="author" content="Admin Dashboard">
+    <title>Profile - Admin Dashboard</title>
+    <!-- Boxicons CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap');
+
+        /* Custom CSS for profile page */
+        :root {
+            /* Primary palette */
+            --primary-color: #3b82f6;
+            --primary-color-light: #60a5fa;
+            --primary-color-dark: #2563eb;
+
+            /* Secondary color for gradients, borders, etc. */
+            --secondary-color: #e5e7eb;
+
+            /* Accent palette */
+            --accent-color: #f59e42;
+            --accent-color-light: #fbbf24;
+            --accent-color-dark: #b45309;
+
+            /* Success, warning, error */
+            --success-color: #10b981;
+            --warning-color: #f59e42;
+            --error-color: #ef4444;
+
+            /* Backgrounds */
+            --bg-color: #f9fafb;
+            --bg-color-alt: #ffffff;
+            --card-bg: #ffffff;
+            --input-bg: #f3f4f6;
+
+            /* Text */
+            --text-color: #1f2937;
+            --text-color-light: #374151;
+            --text-color-muted: #6b7280;
+            --text-on-primary: #ffffff;
+
+            /* Sidebar */
+            --sidebar-bg: #1f2937;
+            --sidebar-bg-alt: #374151;
+            --sidebar-text: #ffffff;
+            --sidebar-active-bg: #3b82f6;
+            --sidebar-active-text: #ffffff;
+
+            /* Border & shadow */
+            --border-color: #e5e7eb;
+            --shadow-color: rgba(59, 130, 246, 0.08);
+
+            /* Table */
+            --table-header-bg: #3b82f6;
+            --table-header-text: #ffffff;
+            --table-row-hover: #e0f2fe;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #60a5fa;
+            --primary-color-light: #93c5fd;
+            --primary-color-dark: #2563eb;
+
+            --secondary-color: #374151;
+
+            --accent-color: #fbbf24;
+            --accent-color-light: #fde68a;
+            --accent-color-dark: #b45309;
+
+            --success-color: #34d399;
+            --warning-color: #fbbf24;
+            --error-color: #f87171;
+
+            --bg-color: #111827;
+            --bg-color-alt: #1f2937;
+            --card-bg: #1e293b;
+            --input-bg: #374151;
+
+            --text-color: #f3f4f6;
+            --text-color-light: #d1d5db;
+            --text-color-muted: #9ca3af;
+            --text-on-primary: #1e293b;
+
+            --sidebar-bg: #111827;
+            --sidebar-bg-alt: #1f2937;
+            --sidebar-text: #d1d5db;
+            --sidebar-active-bg: #2563eb;
+            --sidebar-active-text: #ffffff;
+
+            --border-color: #374151;
+            --shadow-color: rgba(59, 130, 246, 0.18);
+
+            --table-header-bg: #2563eb;
+            --table-header-text: #ffffff;
+            --table-row-hover: #1e40af;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            font-style: normal;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            transition: transform 0.3s ease, box-shadow 0.3s;
+            border-top-right-radius: 1.25rem;
+            border-bottom-right-radius: 1.25rem;
+            box-shadow: 2px 0 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--secondary-color);
+            border-top-right-radius: 1.25rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            transition: background 0.3s, color 0.3s, transform 0.2s;
+            border-radius: 0.75rem;
+            margin: 0.25rem 1rem;
+            font-weight: 500;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.bg-gray-700 {
+            background: linear-gradient(90deg, var(--primary-color) 60%, var(--secondary-color) 100%);
+            color: var(--sidebar-active-text);
+            transform: scale(1.045);
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: margin-left 0.3s ease, box-shadow 0.3s, background 0.3s;
+            border-radius: 1.5rem;
+            background: linear-gradient(120deg, var(--bg-color-alt) 0%, var(--bg-color) 100%);
+            min-height: 100vh;
+            box-shadow: 0 4px 24px var(--shadow-color);
+        }
+
+        .main-content:hover,
+        .main-content:focus-within {
+            box-shadow: 0 8px 32px var(--shadow-color);
+            background: linear-gradient(120deg, var(--card-bg) 0%, var(--bg-color-alt) 100%);
+        }
+
+        .activity-table th,
+        .activity-table td,
+        .metrics-table th,
+        .metrics-table td,
+        .users-table th,
+        .users-table td,
+        .settings-table th,
+        .settings-table td,
+        .login-table th,
+        .login-table td {
+            padding: 1rem;
+            border: 1px solid var(--secondary-color);
+            text-align: left;
+            transition: background-color 0.3s, color 0.3s, transform 0.2s;
+            border-radius: 0.5rem;
+        }
+
+        /* Profile card */
+        .profile-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--secondary-color);
+            border-radius: 1.25rem;
+            padding: 1.5rem;
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            box-shadow: 0 2px 12px var(--shadow-color);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-8px) scale(1.025);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border-color: var(--primary-color);
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Form styles */
+        .profile-form input,
+        .profile-form textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 0.25rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .profile-form button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: var(--text-on-primary);
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        /* Activity log table */
+        .activity-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--bg-color);
+        }
+
+        .activity-table th,
+        .activity-table td {
+            padding: 1rem;
+            border: 1px solid var(--secondary-color);
+            text-align: left;
+        }
+
+        .activity-table th {
+            background-color: var(--table-header-bg);
+            color: var(--table-header-text);
+        }
+
+        .activity-table tr {
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .activity-table tr:hover {
+            background: var(--table-row-hover);
+            transform: scale(1.01);
+        }
+
+        /* Search bar */
+        .search-bar input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--secondary-color);
+            border-radius: 0.25rem;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .main-content.full {
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-card {
+                padding: 1rem;
+            }
+
+            .activity-table th,
+            .activity-table td {
+                padding: 0.5rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .bx-spin {
+            animation: spin 2s linear infinite;
+        }
+
+        /* Accessibility */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+    <!-- Sidebar -->
+    <aside class="sidebar transition-transform duration-300 ease-in-out">
+        <div class="sidebar-header">
+            <h2 class="text-xl font-bold">Admin Dashboard</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/dashboard"><i class="bx bx-home-alt mr-2"></i> Dashboard</a>
+            <a href="/analytics"><i class="bx bx-bar-chart-alt-2 mr-2"></i> Analytics</a>
+            <a href="/users"><i class="bx bx-user mr-2"></i> Users</a>
+            <a href="/profile" class="bg-gray-700"><i class="bx bx-id-card mr-2"></i> Profile</a>
+            <a href="/settings"><i class="bx bx-cog mr-2"></i> Settings</a>
+            <a href="/logout"><i class="bx bx-log-out mr-2"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-6">
+            <div class="flex items-center">
+                <button id="toggle-sidebar" class="text-2xl mr-4">
+                    <i class="bx bx-menu"></i>
+                </button>
+                <h1 class="text-2xl font-bold">User Profile</h1>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 transition-colors" aria-label="Toggle dark mode">
+                    <i class="bx bx-moon" id="theme-toggle-icon"></i>
+                </button>
+                <script>
+                    // --- Dark Mode Toggle ---
+                    const themeToggleBtn = document.getElementById('theme-toggle');
+                    const themeToggleIcon = document.getElementById('theme-toggle-icon');
+                    // Update all Tailwind utility classes for dark mode
+                    function updateTailwindDarkClasses(theme) {
+                        // Add/remove 'dark' class on html for Tailwind dark: support
+                        if (theme === 'dark') {
+                            document.documentElement.classList.add('dark');
+                        } else {
+                            document.documentElement.classList.remove('dark');
+                        }
+                    }
+                    function setTheme(theme) {
+                        document.body.setAttribute('data-theme', theme);
+                        localStorage.setItem('theme', theme);
+                        updateTailwindDarkClasses(theme);
+                        if (theme === 'dark') {
+                            themeToggleIcon.classList.remove('bx-moon');
+                            themeToggleIcon.classList.add('bx-sun');
+                        } else {
+                            themeToggleIcon.classList.remove('bx-sun');
+                            themeToggleIcon.classList.add('bx-moon');
+                        }
+                        // Set password input color to black in dark mode
+                        document.querySelectorAll('input[type="password"]').forEach(input => {
+                            if (theme === 'dark') {
+                                input.style.color = '#000';
+                            } else {
+                                input.style.color = '';
+                            }
+                        });
+                        // Set timetable font color and background for dark mode
+                        const timetableTable = document.getElementById('timetable-table');
+                        if (timetableTable) {
+                            timetableTable.querySelectorAll('td, th').forEach(cell => {
+                                if (theme === 'dark') {
+                                    cell.style.color = '#fff';
+                                    cell.style.backgroundColor = '#181e2a';
+                                } else {
+                                    cell.style.color = '';
+                                    cell.style.backgroundColor = '';
+                                }
+                            });
+                        }
+                        // Timetable section background
+                        const timetableSection = document.querySelector('.profile-card.mb-6:nth-of-type(4)');
+                        if (timetableSection) {
+                            if (theme === 'dark') {
+                                timetableSection.style.backgroundColor = '#1e293b';
+                                timetableSection.style.borderColor = '#374151';
+                            } else {
+                                timetableSection.style.backgroundColor = '';
+                                timetableSection.style.borderColor = '';
+                            }
+                        }
+                        // Timetable day buttons
+                        document.querySelectorAll('.timetable-day-btn').forEach(btn => {
+                            if (theme === 'dark') {
+                                btn.classList.remove('bg-gray-100', 'text-gray-700');
+                                btn.classList.remove('bg-blue-100', 'text-blue-700');
+                                if (btn.classList.contains('bg-blue-100')) {
+                                    btn.classList.add('bg-blue-900', 'text-blue-100');
+                                } else {
+                                    btn.classList.add('bg-gray-800', 'text-gray-200');
+                                }
+                            } else {
+                                btn.classList.remove('bg-gray-800', 'text-gray-200', 'bg-blue-900', 'text-blue-100');
+                                if (btn.classList.contains('bg-blue-900')) {
+                                    btn.classList.add('bg-blue-100', 'text-blue-700');
+                                } else {
+                                    btn.classList.add('bg-gray-100', 'text-gray-700');
+                                }
+                            }
+                        });
+                        // Timetable header row
+                        const timetableHead = timetableTable && timetableTable.closest('table').querySelector('thead tr');
+                        if (timetableHead) {
+                            if (theme === 'dark') {
+                                timetableHead.style.background = 'linear-gradient(90deg, #2563eb 80%, #60a5fa 100%)';
+                                timetableHead.querySelectorAll('th').forEach(th => th.style.color = '#fff');
+                            } else {
+                                timetableHead.style.background = '';
+                                timetableHead.querySelectorAll('th').forEach(th => th.style.color = '');
+                            }
+                        }
+                        // Day-wise summary table dark mode
+                        const statsTable = document.querySelector('.timetable-stats-table');
+                        if (statsTable) {
+                            statsTable.querySelectorAll('th, td').forEach(cell => {
+                                if (theme === 'dark') {
+                                    cell.style.backgroundColor = '#181e2a';
+                                    cell.style.color = '#fff';
+                                    cell.style.borderColor = '#374151';
+                                } else {
+                                    cell.style.backgroundColor = '';
+                                    cell.style.color = '';
+                                    cell.style.borderColor = '';
+                                }
+                            });
+                            // Header row
+                            const statsHead = statsTable.querySelector('thead tr');
+                            if (statsHead) {
+                                if (theme === 'dark') {
+                                    statsHead.style.background = 'linear-gradient(90deg, #2563eb 80%, #60a5fa 100%)';
+                                    statsHead.querySelectorAll('th').forEach(th => th.style.color = '#fff');
+                                } else {
+                                    statsHead.style.background = '';
+                                    statsHead.querySelectorAll('th').forEach(th => th.style.color = '');
+                                }
+                            }
+                        }
+                    }
+                    // On load, set theme from localStorage or system
+                    document.addEventListener('DOMContentLoaded', function () {
+                        let theme = localStorage.getItem('theme');
+                        if (!theme) {
+                            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                        }
+                        setTheme(theme);
+                    });
+                    themeToggleBtn.onclick = function () {
+                        const current = document.body.getAttribute('data-theme');
+                        setTheme(current === 'dark' ? 'light' : 'dark');
+                    };
+                    // Listen for system theme changes
+                    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                        if (!localStorage.getItem('theme')) {
+                            setTheme(e.matches ? 'dark' : 'light');
+                        }
+                    });
+
+                    // Also update timetable font color after timetable is rendered
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const theme = document.body.getAttribute('data-theme');
+                        setTimeout(() => setTheme(theme), 100); // ensure after timetable render
+                    });
+                    // Patch timetable render to always set font color and backgrounds in dark mode
+                    const origRenderTimetable = window.renderTimetable;
+                    if (origRenderTimetable) {
+                        window.renderTimetable = function (...args) {
+                            origRenderTimetable.apply(this, args);
+                            const theme = document.body.getAttribute('data-theme');
+                            setTheme(theme);
+                        };
+                    }
+                </script>
+                <style>
+                    /* Timetable dark mode overrides */
+                    [data-theme="dark"] .profile-card.mb-6:nth-of-type(4) {
+                        background-color: #1e293b !important;
+                        border-color: #374151 !important;
+                    }
+                    [data-theme="dark"] .activity-table {
+                        background-color: #181e2a !important;
+                    }
+                    [data-theme="dark"] .activity-table th,
+                    [data-theme="dark"] .activity-table td {
+                        color: #fff !important;
+                        background-color: #181e2a !important;
+                        border-color: #7f858d !important;
+                    }
+                    [data-theme="dark"] .activity-table thead tr {
+                        background: linear-gradient(90deg, #2563eb 80%, #60a5fa 100%) !important;
+                    }
+                    [data-theme="dark"] .timetable-day-btn.bg-blue-100,
+                    [data-theme="dark"] .timetable-day-btn.bg-blue-900 {
+                        background-color: #2563eb !important;
+                        color: #fff !important;
+                    }
+                    [data-theme="dark"] .timetable-day-btn.bg-gray-100,
+                    [data-theme="dark"] .timetable-day-btn.bg-gray-800 {
+                        background-color: #374151 !important;
+                        color: #d1d5db !important;
+                    }
+                    [data-theme="dark"] #timetable-table tr:hover {
+                        background: #243056 !important;
+                        box-shadow: 0 2px 8px 0 #1e293b !important;
+                    }
+                    [data-theme="dark"] #timetable-table td[contenteditable="true"]:focus {
+                        outline: 2px solid #60a5fa !important;
+                        background: #243056 !important;
+                    }
+                    /* Day-wise summary table dark mode */
+                    [data-theme="dark"] .timetable-stats-table {
+                        background-color: #181e2a !important;
+                        border-color: #374151 !important;
+                    }
+                    [data-theme="dark"] .timetable-stats-table th,
+                    [data-theme="dark"] .timetable-stats-table td {
+                        color: #fff !important;
+                        background-color: #181e2a !important;
+                        border-color: #374151 !important;
+                    }
+                    [data-theme="dark"] .timetable-stats-table thead tr {
+                        background: linear-gradient(90deg, #2563eb 80%, #60a5fa 100%) !important;
+                    }
+                    [data-theme="dark"] .timetable-stats-table td span.bg-blue-100 {
+                        background-color: #2563eb !important;
+                        color: #fff !important;
+                    }
+                    [data-theme="dark"] .timetable-stats-table td span.bg-pink-100 {
+                        background-color: #be185d !important;
+                        color: #fff !important;
+                    }
+                    [data-theme="dark"] .timetable-stats-table td span.bg-indigo-100 {
+                        background-color: #3730a3 !important;
+                        color: #fff !important;
+                    }
+                </style>
+                <button id="fullscreen-toggle" class="p-2 rounded-full bg-gray-200 dark:bg-gray-700"
+                    aria-label="Toggle fullscreen">
+                    <i class="bx bx-fullscreen"></i>
+                </button>
+                <span id="header-name">Welcome, Admin</span>
+            </div>
+        </header>
+
+        <!-- Profile Card -->
+        <!-- Profile Header Banner -->
+        <!-- Profile Details Lock Section -->
+        <section class="relative mb-6">
+            <div class="h-40 md:h-56 w-full rounded-xl overflow-hidden bg-gray-200">
+                <img id="profile-banner-img"
+                    src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80"
+                    alt="Profile Banner" class="object-cover w-full h-full">
+                <input type="file" id="profile-banner-upload" accept="image/*" class="hidden">
+                <label for="profile-banner-upload"
+                    class="absolute bottom-3 right-3 bg-blue-600 text-white px-3 py-1 rounded shadow cursor-pointer text-sm hover:bg-blue-700">
+                    <i class="bx bx-image-add mr-1"></i>Change Banner
+                </label>
+            </div>
+        </section>
+        <section class="profile-card mb-6" id="profile-details-section">
+            <!-- Lock/Unlock Icon Button -->
+            <button id="profile-lock-toggle" title="Lock/Unlock Profile Details"
+                class="absolute top-4 right-4 text-blue-500 hover:text-blue-700 text-2xl z-10 bg-white rounded-full shadow p-2 transition">
+                <i class="bx bx-lock-open" id="profile-lock-icon"></i>
+            </button>
+            <div id="profile-details-locked" class="flex flex-col items-center justify-center py-12 animate-fade-in">
+                <i class="bx bx-lock-alt text-5xl text-blue-500 mb-4 animate-bounce"></i>
+                <h2 class="text-xl font-semibold mb-2 animate-slide-down">Profile Details Locked</h2>
+                <p class="mb-4 text-gray-600 dark:text-gray-300 animate-fade-in">Enter your password to view your
+                    personal details.</p>
+                <input type="password" id="unlock-profile-password" placeholder="Enter password"
+                    class="mb-2 px-4 py-2 border rounded w-64 max-w-full animate-pop-in">
+                <button id="unlock-profile-btn"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 animate-pop-in">Unlock</button>
+                <span id="unlock-profile-error" class="text-red-500 mt-2 hidden animate-shake">Incorrect password.
+                    Please try again.</span>
+            </div>
+            <div id="profile-details-content" class="hidden">
+                <h2 class="text-xl font-semibold mb-4">Profile Details</h2>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div>
+                        <img src="https://via.placeholder.com/120" alt="Profile Picture" class="profile-img"
+                            id="profile-img">
+                        <input type="file" id="profile-pic" accept="image/*" class="mt-2 hidden">
+                        <label for="profile-pic"
+                            class="mt-2 inline-block px-4 py-2 bg-blue-500 text-white rounded cursor-pointer">Change
+                            Picture</label>
+                        <script>
+                            // --- Profile Picture Persistence ---
+                            const defaultProfilePic = "https://via.placeholder.com/120";
+                            function loadProfilePic() {
+                                const pic = localStorage.getItem('profilePic') || defaultProfilePic;
+                                document.getElementById('profile-img').src = pic;
+                            }
+                            function saveProfilePic(dataUrl) {
+                                localStorage.setItem('profilePic', dataUrl);
+                                loadProfilePic();
+                            }
+                            document.getElementById('profile-pic').addEventListener('change', (e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = (ev) => saveProfilePic(ev.target.result);
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                            document.addEventListener('DOMContentLoaded', loadProfilePic);
+
+                            // --- Fullscreen Toggle ---
+                            document.getElementById('fullscreen-toggle').onclick = function () {
+                                if (!document.fullscreenElement) {
+                                    document.documentElement.requestFullscreen();
+                                } else {
+                                    document.exitFullscreen();
+                                }
+                            };
+                        </script>
+                    </div>
+                    <div class="flex-1 flex flex-col justify-center gap-3">
+                        <div class="mb-2">
+                            <h3 class="text-2xl font-bold text-blue-600 flex items-center gap-2">
+                                <i class="bx bx-user-circle text-3xl"></i>
+                                <span id="profile-name">Alex Johnson</span>
+                            </h3>
+                            <span class="inline-block bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded mt-1">
+                                <i class="bx bx-shield-quarter align-middle"></i>
+                                <span id="profile-role">Student</span>
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-envelope text-blue-500"></i>
+                                <span class="font-semibold">Email:</span>
+                                <span id="profile-email"
+                                    class="text-gray-700 dark:text-gray-200">alex.johnson@college.edu</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-phone text-blue-500"></i>
+                                <span class="font-semibold">Phone:</span>
+                                <span id="profile-phone" class="text-gray-700 dark:text-gray-200">+1 (555)
+                                    123-4567</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-map text-blue-500"></i>
+                                <span class="font-semibold">Location:</span>
+                                <span id="profile-location" class="text-gray-700 dark:text-gray-200">Springfield,
+                                    USA</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-book text-blue-500"></i>
+                                <span class="font-semibold">Department:</span>
+                                <span id="profile-department" class="text-gray-700 dark:text-gray-200">Automation &
+                                    Robotics
+                                    Engineering</span>
+                                <button id="edit-department" class="ml-2 text-blue-500 hover:underline" title="Edit"><i
+                                        class="bx bx-edit"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-building text-blue-500"></i>
+                                <span class="font-semibold">College:</span>
+                                <span id="profile-company" class="text-gray-700 dark:text-gray-200">Springfield
+                                    Institute of
+                                    Technology</span>
+                                <button id="edit-college" class="ml-2 text-blue-500 hover:underline" title="Edit"><i
+                                        class="bx bx-edit"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-id-card text-blue-500"></i>
+                                <span class="font-semibold">Student ID:</span>
+                                <span id="profile-employeeid" class="text-gray-700 dark:text-gray-200">SIT2023001</span>
+                                <button id="edit-studentid" class="ml-2 text-blue-500 hover:underline" title="Edit"><i
+                                        class="bx bx-edit"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-globe text-blue-500"></i>
+                                <span class="font-semibold">Portfolio:</span>
+                                <span id="profile-website"
+                                    class="text-gray-700 dark:text-gray-200">https://alexjohnson.me</span>
+                                <button id="edit-portfolio" class="ml-2 text-blue-500 hover:underline" title="Edit"><i
+                                        class="bx bx-edit"></i></button>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-calendar text-blue-500"></i>
+                                <span class="font-semibold">Joined:</span>
+                                <span id="profile-joined" class="text-gray-700 dark:text-gray-200">August 20,
+                                    2022</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <i class="bx bx-lock text-blue-500"></i>
+                                <span class="font-semibold">Last Password Change:</span>
+                                <span id="profile-password-change" class="text-gray-700 dark:text-gray-200">Never</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 bg-gray-100 dark:bg-gray-800 rounded p-3">
+                            <div class="flex items-start gap-2">
+                                <i class="bx bx-info-circle text-blue-400 mt-1"></i>
+                                <div>
+                                    <span class="font-semibold">Bio:</span>
+                                    <span id="profile-bio" class="text-gray-700 dark:text-gray-200">
+                                        Undergraduate student passionate about automation, robotics, and AI. Active in
+                                        college robotics club, working on autonomous vehicle and industrial automation
+                                        projects. Interested in research, hackathons, and collaborative learning.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <style>
+            /* Animations for profile details */
+            @keyframes fade-in {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            .animate-fade-in {
+                animation: fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes pop-in {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+
+                80% {
+                    opacity: 1;
+                    transform: scale(1.05);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+            }
+
+            .animate-pop-in {
+                animation: pop-in 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes slide-down {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .animate-slide-down {
+                animation: slide-down 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes slide-right {
+                0% {
+                    opacity: 0;
+                    transform: translateX(-30px);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+
+            .animate-slide-right {
+                animation: slide-right 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+
+            @keyframes shake {
+                0% {
+                    transform: translateX(0);
+                }
+
+                20% {
+                    transform: translateX(-6px);
+                }
+
+                40% {
+                    transform: translateX(6px);
+                }
+
+                60% {
+                    transform: translateX(-4px);
+                }
+
+                80% {
+                    transform: translateX(4px);
+                }
+
+                100% {
+                    transform: translateX(0);
+                }
+            }
+
+            .animate-shake {
+                animation: shake 0.4s;
+            }
+
+            /* Animate bx icons with bounce */
+            @keyframes bounce {
+
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+
+                50% {
+                    transform: translateY(-6px);
+                }
+            }
+
+            .animate-bounce {
+                animation: bounce 1.2s infinite;
+            }
+        </style>
+        <script>
+            // --- Profile Banner Persistence ---
+            const defaultBanner = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80";
+            function loadBanner() {
+                const banner = localStorage.getItem('profileBanner') || defaultBanner;
+                document.getElementById('profile-banner-img').src = banner;
+            }
+            function saveBanner(dataUrl) {
+                localStorage.setItem('profileBanner', dataUrl);
+                loadBanner();
+            }
+            document.getElementById('profile-banner-upload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => saveBanner(ev.target.result);
+                    reader.readAsDataURL(file);
+                }
+            });
+            document.addEventListener('DOMContentLoaded', loadBanner);
+
+            // --- Profile Details Lock Logic ---
+            const profileDetailsLocked = document.getElementById('profile-details-locked');
+            const profileDetailsContent = document.getElementById('profile-details-content');
+            const unlockBtn = document.getElementById('unlock-profile-btn');
+            const unlockInput = document.getElementById('unlock-profile-password');
+            const unlockError = document.getElementById('unlock-profile-error');
+            const lockToggleBtn = document.getElementById('profile-lock-toggle');
+            const lockIcon = document.getElementById('profile-lock-icon');
+
+            // Also lock Edit Profile, Change Password, and Banner
+            const editProfileSection = document.getElementById('edit-profile-section');
+            const changePasswordSection = document.querySelectorAll('.profile-card')[2];
+            const bannerImg = document.getElementById('profile-banner-img');
+            const bannerLabel = document.querySelector('label[for="profile-banner-upload"]');
+
+            // Lock state persistence (sessionStorage)
+            function setLockedState(locked) {
+                if (locked) {
+                    profileDetailsLocked.classList.remove('hidden');
+                    profileDetailsContent.classList.add('hidden');
+                    lockIcon.classList.remove('bx-lock-open');
+                    lockIcon.classList.add('bx-lock');
+                    if (editProfileSection) editProfileSection.classList.add('pointer-events-none', 'opacity-50');
+                    if (changePasswordSection) changePasswordSection.classList.add('pointer-events-none', 'opacity-50');
+                    if (bannerImg) bannerImg.style.filter = "blur(2px) grayscale(0.7)";
+                    if (bannerLabel) bannerLabel.classList.add('pointer-events-none', 'opacity-50');
+                    sessionStorage.setItem('profileUnlocked', 'false');
+                } else {
+                    profileDetailsLocked.classList.add('hidden');
+                    profileDetailsContent.classList.remove('hidden');
+                    lockIcon.classList.remove('bx-lock');
+                    lockIcon.classList.add('bx-lock-open');
+                    if (editProfileSection) editProfileSection.classList.remove('pointer-events-none', 'opacity-50');
+                    if (changePasswordSection) changePasswordSection.classList.remove('pointer-events-none', 'opacity-50');
+                    if (bannerImg) bannerImg.style.filter = "";
+                    if (bannerLabel) bannerLabel.classList.remove('pointer-events-none', 'opacity-50');
+                    sessionStorage.setItem('profileUnlocked', 'true');
+                }
+                // Also lock/unlock the edit profile section
+                if (editProfileSection) {
+                    const locked = sessionStorage.getItem('profileUnlocked') !== 'true';
+                    const lockedDiv = document.getElementById('edit-profile-locked');
+                    const contentDiv = document.getElementById('edit-profile-content');
+                    if (locked) {
+                        lockedDiv.classList.remove('hidden');
+                        contentDiv.classList.add('hidden');
+                        sessionStorage.setItem('editProfileUnlocked', 'false');
+                    } else {
+                        lockedDiv.classList.add('hidden');
+                        contentDiv.classList.remove('hidden');
+                        sessionStorage.setItem('editProfileUnlocked', 'true');
+                    }
+                }
+            }
+
+            // Lock after 15 minutes of unlock
+            let lockTimeout = null;
+            function startAutoLockTimer() {
+                if (lockTimeout) clearTimeout(lockTimeout);
+                lockTimeout = setTimeout(() => {
+                    setLockedState(true);
+                }, 15 * 60 * 1000); // 15 minutes
+            }
+
+            // On page load, restore lock state from sessionStorage
+            document.addEventListener('DOMContentLoaded', function () {
+                const unlocked = sessionStorage.getItem('profileUnlocked') === 'true';
+                setLockedState(!unlocked ? true : false);
+                unlockInput.value = '';
+                unlockError.classList.add('hidden');
+                if (unlocked) startAutoLockTimer();
+            });
+
+            // Use the same password as set in localStorage, fallback to 'admin123'
+            function getProfilePassword() {
+                return localStorage.getItem('password') || 'admin123';
+            }
+
+            function unlockProfileDetails() {
+                const entered = unlockInput.value;
+                if (entered === getProfilePassword()) {
+                    setLockedState(false);
+                    unlockError.classList.add('hidden');
+                    startAutoLockTimer();
+                } else {
+                    unlockError.classList.remove('hidden');
+                }
+            }
+
+            unlockBtn.addEventListener('click', unlockProfileDetails);
+            unlockInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') unlockProfileDetails();
+            });
+
+            // Lock/Unlock icon button
+            lockToggleBtn.addEventListener('click', function () {
+                const isUnlocked = sessionStorage.getItem('profileUnlocked') === 'true';
+                if (isUnlocked) {
+                    setLockedState(true);
+                    if (lockTimeout) clearTimeout(lockTimeout);
+                } else {
+                    // Show unlock dialog if locked
+                    profileDetailsLocked.classList.remove('hidden');
+                    profileDetailsContent.classList.add('hidden');
+                    unlockInput.focus();
+                }
+            });
+
+            // Reset timer on user interaction with unlocked section
+            profileDetailsContent.addEventListener('mousemove', startAutoLockTimer);
+            profileDetailsContent.addEventListener('keydown', startAutoLockTimer);
+            profileDetailsContent.addEventListener('click', startAutoLockTimer);
+        </script>
+        <!-- Inline edit inputs (hidden by default) -->
+        <input type="text" id="input-studentid" class="hidden mt-2 px-2 py-1 border rounded" />
+        <input type="text" id="input-college" class="hidden mt-2 px-2 py-1 border rounded" />
+        <input type="text" id="input-department" class="hidden mt-2 px-2 py-1 border rounded" />
+        <input type="text" id="input-portfolio" class="hidden mt-2 px-2 py-1 border rounded" />
+        </section>
+
+
+        <script>
+            // --- Inline Edit for Student ID, College, Department, Portfolio ---
+            function showEditInput(spanId, inputId, saveCallback) {
+                const span = document.getElementById(spanId);
+                const input = document.getElementById(inputId);
+                input.value = span.textContent;
+                input.classList.remove('hidden');
+                input.focus();
+                span.style.display = 'none';
+                input.onblur = function () {
+                    saveCallback(input.value);
+                    input.classList.add('hidden');
+                    span.style.display = '';
+                };
+                input.onkeydown = function (e) {
+                    if (e.key === 'Enter') {
+                        input.blur();
+                    }
+                };
+            }
+
+            document.getElementById('edit-studentid').onclick = function () {
+                showEditInput('profile-employeeid', 'input-studentid', function (val) {
+                    document.getElementById('profile-employeeid').textContent = val;
+                    const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                    profileData.studentId = val;
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                });
+            };
+            document.getElementById('edit-college').onclick = function () {
+                showEditInput('profile-company', 'input-college', function (val) {
+                    document.getElementById('profile-company').textContent = val;
+                    const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                    profileData.college = val;
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                });
+            };
+            document.getElementById('edit-department').onclick = function () {
+                showEditInput('profile-department', 'input-department', function (val) {
+                    document.getElementById('profile-department').textContent = val;
+                    const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                    profileData.department = val;
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                });
+            };
+            document.getElementById('edit-portfolio').onclick = function () {
+                showEditInput('profile-website', 'input-portfolio', function (val) {
+                    document.getElementById('profile-website').textContent = val;
+                    const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                    profileData.portfolio = val;
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                });
+            };
+
+            // Load custom fields on page load if present
+            document.addEventListener('DOMContentLoaded', function () {
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                if (profileData.studentId) document.getElementById('profile-employeeid').textContent = profileData.studentId;
+                if (profileData.college) document.getElementById('profile-company').textContent = profileData.college;
+                if (profileData.department) document.getElementById('profile-department').textContent = profileData.department;
+                if (profileData.portfolio) document.getElementById('profile-website').textContent = profileData.portfolio;
+            });
+        </script>
+
+        <!-- Edit Profile Form (Locked by default) -->
+        <section class="profile-card mb-6" id="edit-profile-section">
+            <div id="edit-profile-locked" class="flex flex-col items-center justify-center py-12 animate-fade-in">
+                <i class="bx bx-lock-alt text-5xl text-blue-500 mb-4 animate-bounce"></i>
+                <h2 class="text-xl font-semibold mb-2 animate-slide-down">Edit Profile Locked</h2>
+                <p class="mb-4 text-gray-600 dark:text-gray-300 animate-fade-in">Enter your password to edit your
+                    profile.</p>
+                <input type="password" id="unlock-edit-profile-password" placeholder="Enter password"
+                    class="mb-2 px-4 py-2 border rounded w-64 max-w-full animate-pop-in">
+                <button id="unlock-edit-profile-btn"
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 animate-pop-in">Unlock</button>
+                <span id="unlock-edit-profile-error" class="text-red-500 mt-2 hidden animate-shake">Incorrect password.
+                    Please try again.</span>
+            </div>
+            <div id="edit-profile-content" class="hidden">
+                <h2 class="text-xl font-semibold mb-4">Edit Profile</h2>
+                <form id="profile-form" class="profile-form">
+                    <div class="mb-4">
+                        <label for="name" class="block mb-1">Name</label>
+                        <input type="text" id="name" name="name" value="John Doe" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block mb-1">Email</label>
+                        <input type="email" id="email" name="email" value="john@example.com" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="phone" class="block mb-1">Phone</label>
+                        <input type="tel" id="phone" name="phone" value="+1 (123) 456-7890">
+                    </div>
+                    <div class="mb-4">
+                        <label for="bio" class="block mb-1">Bio</label>
+                        <textarea id="bio" name="bio"
+                            rows="4">Experienced admin managing user data and analytics.</textarea>
+                    </div>
+                    <button type="submit" class="profile-form button">Save Changes</button>
+                </form>
+                <div id="profile-update-message" class="hidden mt-2 text-green-600 font-semibold">Profile updated
+                    successfully!</div>
+            </div>
+        </section>
+
+        <script>
+            // --- Profile Form Submission Logic ---
+            document.addEventListener('DOMContentLoaded', function () {
+                // Load profile data if present
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                if (profileData.name) document.getElementById('name').value = profileData.name;
+                if (profileData.email) document.getElementById('email').value = profileData.email;
+                if (profileData.phone) document.getElementById('phone').value = profileData.phone;
+                if (profileData.bio) document.getElementById('bio').value = profileData.bio;
+
+                // Also update the profile details section if unlocked
+                if (profileData.name) document.getElementById('profile-name').textContent = profileData.name;
+                if (profileData.email) document.getElementById('profile-email').textContent = profileData.email;
+                if (profileData.phone) document.getElementById('profile-phone').textContent = profileData.phone;
+                if (profileData.bio) document.getElementById('profile-bio').textContent = profileData.bio;
+            });
+
+            document.getElementById('profile-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Get form values
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const bio = document.getElementById('bio').value;
+
+                // Save to localStorage
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                profileData.name = name;
+                profileData.email = email;
+                profileData.phone = phone;
+                profileData.bio = bio;
+                localStorage.setItem('profileData', JSON.stringify(profileData));
+
+                // Update profile details section
+                document.getElementById('profile-name').textContent = name;
+                document.getElementById('profile-email').textContent = email;
+                document.getElementById('profile-phone').textContent = phone;
+                document.getElementById('profile-bio').textContent = bio;
+
+                // Show confirmation message
+                const msg = document.getElementById('profile-update-message');
+                msg.classList.remove('hidden');
+                setTimeout(() => msg.classList.add('hidden'), 2000);
+            });
+            // --- Edit Profile Lock Logic ---
+            const editProfileLocked = document.getElementById('edit-profile-locked');
+            const editProfileContent = document.getElementById('edit-profile-content');
+            const unlockEditProfileBtn = document.getElementById('unlock-edit-profile-btn');
+            const unlockEditProfileInput = document.getElementById('unlock-edit-profile-password');
+            const unlockEditProfileError = document.getElementById('unlock-edit-profile-error');
+
+            function setEditProfileLockedState(locked) {
+                if (locked) {
+                    editProfileLocked.classList.remove('hidden');
+                    editProfileContent.classList.add('hidden');
+                    sessionStorage.setItem('editProfileUnlocked', 'false');
+                } else {
+                    editProfileLocked.classList.add('hidden');
+                    editProfileContent.classList.remove('hidden');
+                    sessionStorage.setItem('editProfileUnlocked', 'true');
+                }
+            }
+            // Lock after 15 minutes of unlock
+            let editProfileLockTimeout = null;
+            function startEditProfileAutoLockTimer() {
+                if (editProfileLockTimeout) clearTimeout(editProfileLockTimeout);
+                editProfileLockTimeout = setTimeout(() => {
+                    setEditProfileLockedState(true);
+                }, 15 * 60 * 1000);
+            }
+            document.addEventListener('DOMContentLoaded', function () {
+                const unlocked = sessionStorage.getItem('editProfileUnlocked') === 'true';
+                setEditProfileLockedState(!unlocked ? true : false);
+                unlockEditProfileInput.value = '';
+                unlockEditProfileError.classList.add('hidden');
+                if (unlocked) startEditProfileAutoLockTimer();
+            });
+            function getProfilePassword() {
+                return localStorage.getItem('password') || 'admin123';
+            }
+            function unlockEditProfile() {
+                const entered = unlockEditProfileInput.value;
+                if (entered === getProfilePassword()) {
+                    setEditProfileLockedState(false);
+                    unlockEditProfileError.classList.add('hidden');
+                    startEditProfileAutoLockTimer();
+                } else {
+                    unlockEditProfileError.classList.remove('hidden');
+                }
+            }
+            unlockEditProfileBtn.addEventListener('click', unlockEditProfile);
+            unlockEditProfileInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') unlockEditProfile();
+            });
+            // Reset timer on user interaction with unlocked section
+            editProfileContent.addEventListener('mousemove', startEditProfileAutoLockTimer);
+            editProfileContent.addEventListener('keydown', startEditProfileAutoLockTimer);
+            editProfileContent.addEventListener('click', startEditProfileAutoLockTimer);
+        </script>
+
+        <!-- Change Password Form -->
+        <section class="profile-card mb-6">
+            <h2 class="text-xl font-semibold mb-4">Change Password</h2>
+            <form id="password-form" class="profile-form">
+                <div class="mb-4">
+                    <label for="current-password" class="block mb-1">Current Password</label>
+                    <input type="password" id="current-password" name="current-password" required>
+                </div>
+                <div class="mb-4">
+                    <label for="new-password" class="block mb-1">New Password</label>
+                    <input type="password" id="new-password" name="new-password" required>
+                </div>
+                <div class="mb-4">
+                    <label for="confirm-password" class="block mb-1">Confirm New Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
+                <button type="submit" class="profile-form button">Change Password</button>
+            </form>
+            <div id="password-update-message" class="hidden mt-2 text-green-600 font-semibold">Password changed
+                successfully!</div>
+            <div id="password-update-error" class="hidden mt-2 text-red-600 font-semibold"></div>
+        </section>
+        <script>
+            // --- Password Change Logic ---
+            document.getElementById('password-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const current = document.getElementById('current-password').value;
+                const newPass = document.getElementById('new-password').value;
+                const confirm = document.getElementById('confirm-password').value;
+                const errorDiv = document.getElementById('password-update-error');
+                const msgDiv = document.getElementById('password-update-message');
+                errorDiv.classList.add('hidden');
+                msgDiv.classList.add('hidden');
+
+                const stored = localStorage.getItem('password') || 'admin123';
+                if (current !== stored) {
+                    errorDiv.textContent = "Current password is incorrect.";
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                if (newPass.length < 6) {
+                    errorDiv.textContent = "New password must be at least 6 characters.";
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                if (newPass !== confirm) {
+                    errorDiv.textContent = "New password and confirmation do not match.";
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                if (newPass === stored) {
+                    errorDiv.textContent = "New password must be different from the current password.";
+                    errorDiv.classList.remove('hidden');
+                    return;
+                }
+                localStorage.setItem('password', newPass);
+                // Update last password change date
+                const now = new Date();
+                const dateStr = now.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('profile-password-change').textContent = dateStr;
+                // Optionally store in profileData
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                profileData.lastPasswordChange = dateStr;
+                localStorage.setItem('profileData', JSON.stringify(profileData));
+                msgDiv.classList.remove('hidden');
+                // Clear form
+                document.getElementById('current-password').value = '';
+                document.getElementById('new-password').value = '';
+                document.getElementById('confirm-password').value = '';
+                setTimeout(() => msgDiv.classList.add('hidden'), 2000);
+            });
+            // On load, update last password change if present
+            document.addEventListener('DOMContentLoaded', function () {
+                const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+                if (profileData.lastPasswordChange) {
+                    document.getElementById('profile-password-change').textContent = profileData.lastPasswordChange;
+                }
+            });
+        </script>
+        <!-- Weekly Class Timetable Section (Tabbed, 12 slots per day) -->
+        <section class="profile-card mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                Weekly Class Timetable
+                <button id="reset-timetable"
+                    class="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded text-xs hover:bg-red-200"
+                    title="Reset timetable">
+                    <i class="bx bx-trash"></i> Delete
+                </button>
+                <button id="export-timetable"
+                    class="ml-2 px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200"
+                    title="Export timetable">
+                    <i class="bx bx-download"></i> Export
+                </button>
+                <button id="import-timetable-btn"
+                    class="ml-2 px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs hover:bg-yellow-200"
+                    title="Import timetable">
+                    <i class="bx bx-upload"></i> Import
+                </button>
+                <input type="file" id="import-timetable" accept=".json,.csv" class="hidden" />
+                <button id="export-timetable-csv"
+                    class="ml-2 px-2 py-1 bg-green-50 text-green-800 rounded text-xs hover:bg-green-200"
+                    title="Export timetable as CSV">
+                    <i class="bx bx-file"></i> Export CSV
+                </button>
+            </h2>
+            <div id="import-instructions" class="hidden mb-2 text-xs">
+                <div class="border border-yellow-400 bg-yellow-50 rounded p-3 text-yellow-900">
+                    <b>Permission required:</b> By uploading a file, you allow this page to read and import its
+                    timetable data for your use only. No data is sent to any server.<br>
+                    <b>Import instructions:</b> You can import a timetable in <span class="font-semibold">JSON</span> or
+                    <span class="font-semibold">CSV</span> format.<br>
+                    For CSV, use columns: <code>Day,Slot,Time,Subject,Room,Lecturer</code>.<br>
+                    Example row: <code>Monday,Slot 1,08:00-08:50,Robotics 101,Room 201,Dr. Smith</code>
+                </div>
+            </div>
+            <div class="mb-4 flex flex-wrap gap-2">
+                <button class="timetable-day-btn px-3 py-1 rounded bg-blue-100 text-blue-700 font-semibold"
+                    data-day="Monday">Monday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Tuesday">Tuesday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Wednesday">Wednesday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Thursday">Thursday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Friday">Friday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Saturday">Saturday</button>
+                <button class="timetable-day-btn px-3 py-1 rounded bg-gray-100 text-gray-700"
+                    data-day="Sunday">Sunday</button>
+            </div>
+            <div class="overflow-x-auto rounded-lg shadow">
+                <table
+                    class="activity-table min-w-full text-xs md:text-sm bg-white dark:bg-gray-900 rounded-lg table-fixed">
+                    <colgroup>
+                        <col style="width: 13%;">
+                        <col style="width: 17%;">
+                        <col style="width: 30%;">
+                        <col style="width: 20%;">
+                        <col style="width: 20%;">
+                    </colgroup>
+                    <thead>
+                        <tr class="bg-blue-500 text-white">
+                            <th class="py-3 px-2 text-left">Slot</th>
+                            <th class="py-3 px-2 text-left">Time</th>
+                            <th class="py-3 px-2 text-left">Subject</th>
+                            <th class="py-3 px-2 text-left">Room</th>
+                            <th class="py-3 px-2 text-left">Lecturer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetable-table">
+                        <!-- Rows will be rendered by JS -->
+                    </tbody>
+                </table>
+            </div>
+            <div id="timetable-message" class="hidden mt-2 text-green-600 font-semibold"></div>
+        </section>
+        <script>
+            // --- Timetable Tabbed, 12 slots per day, all fields editable, smart layout, persistent to localStorage until reset ---
+            const timetableTableBody = document.getElementById('timetable-table');
+            const timetableDayBtns = document.querySelectorAll('.timetable-day-btn');
+            const TIMETABLE_KEY = 'timetableTabbedData';
+            const TIMETABLE_EDIT_KEY = 'timetableTabbedDataEdit';
+            const timetableSlots = [
+                "Slot 1", "Slot 2", "Slot 3", "Slot 4", "Slot 5", "Slot 6",
+                "Slot 7", "Slot 8", "Slot 9", "Slot 10", "Slot 11", "Slot 12"
+            ];
+            const slotTimes = [
+                "08:00-08:50", "08:50-09:40", "09:40-10:30", "10:30-11:20",
+                "11:20-12:10", "12:10-13:00", "13:00-13:50", "13:50-14:40",
+                "14:40-15:30", "15:30-16:20", "16:20-17:10", "17:10-18:00"
+            ];
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            const defaultTimetable = {};
+            days.forEach(day => {
+                defaultTimetable[day] = Array.from({ length: 12 }, (_, i) => [
+                    timetableSlots[i],
+                    slotTimes[i],
+                    "",
+                    "",
+                    ""
+                ]);
+            });
+            defaultTimetable["Monday"][0][2] = "Robotics 101";
+            defaultTimetable["Monday"][0][3] = "Room 201";
+            defaultTimetable["Monday"][0][4] = "Dr. Smith";
+            defaultTimetable["Tuesday"][1][2] = "AI Fundamentals";
+            defaultTimetable["Tuesday"][1][3] = "Room 305";
+            defaultTimetable["Tuesday"][1][4] = "Prof. Lee";
+            defaultTimetable["Wednesday"][2][2] = "Automation Lab";
+            defaultTimetable["Wednesday"][2][3] = "Lab 2";
+            defaultTimetable["Wednesday"][2][4] = "Ms. Clark";
+
+            // On first load, set both keys if not present
+            function initializeTimetableStorage() {
+                if (!localStorage.getItem(TIMETABLE_KEY)) {
+                    localStorage.setItem(TIMETABLE_KEY, JSON.stringify(defaultTimetable));
+                }
+                if (!localStorage.getItem(TIMETABLE_EDIT_KEY)) {
+                    localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(defaultTimetable));
+                }
+            }
+            initializeTimetableStorage();
+
+            function loadTimetable() {
+                let data = JSON.parse(localStorage.getItem(TIMETABLE_EDIT_KEY));
+                if (!data) {
+                    data = JSON.parse(JSON.stringify(defaultTimetable));
+                    localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(data));
+                }
+                days.forEach(day => {
+                    if (!data[day] || data[day].length !== 12) {
+                        data[day] = Array.from({ length: 12 }, (_, i) => [
+                            timetableSlots[i],
+                            slotTimes[i],
+                            "",
+                            "",
+                            ""
+                        ]);
+                    }
+                });
+                return data;
+            }
+            function saveTimetable(data) {
+                localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(data));
+            }
+            let currentDay = "Monday";
+            function renderTimetable(day) {
+                const data = loadTimetable();
+                timetableTableBody.innerHTML = '';
+                data[day].forEach((row, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.setAttribute('data-index', idx);
+                    // Slot name (editable)
+                    const tdSlot = document.createElement('td');
+                    tdSlot.className = "py-2 px-2 font-semibold bg-gray-50";
+                    tdSlot.contentEditable = "true";
+                    tdSlot.textContent = row[0];
+                    tdSlot.title = "Edit slot name";
+                    tdSlot.addEventListener('blur', function () {
+                        updateTimetableCell(day, idx, 0, tdSlot.textContent.trim());
+                    });
+                    tdSlot.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') { e.preventDefault(); tdSlot.blur(); }
+                    });
+                    tr.appendChild(tdSlot);
+                    // Time (editable)
+                    const tdTime = document.createElement('td');
+                    tdTime.className = "py-2 px-2 bg-gray-50";
+                    tdTime.contentEditable = "true";
+                    tdTime.textContent = row[1];
+                    tdTime.title = "Edit slot time";
+                    tdTime.addEventListener('blur', function () {
+                        updateTimetableCell(day, idx, 1, tdTime.textContent.trim());
+                    });
+                    tdTime.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') { e.preventDefault(); tdTime.blur(); }
+                    });
+                    tr.appendChild(tdTime);
+                    // Subject, Room, Lecturer (editable)
+                    for (let i = 2; i <= 4; i++) {
+                        const td = document.createElement('td');
+                        td.className = "py-2 px-2 truncate";
+                        td.contentEditable = "true";
+                        td.textContent = row[i];
+                        td.title = ["Subject", "Room", "Lecturer"][i - 2];
+                        td.addEventListener('blur', function () {
+                            updateTimetableCell(day, idx, i, td.textContent.trim());
+                        });
+                        td.addEventListener('keydown', function (e) {
+                            if (e.key === 'Enter') { e.preventDefault(); td.blur(); }
+                        });
+                        tr.appendChild(td);
+                    }
+                    timetableTableBody.appendChild(tr);
+                });
+            }
+
+            function updateTimetableCell(day, rowIdx, colIdx, value) {
+                const data = loadTimetable();
+                data[day][rowIdx][colIdx] = value;
+                saveTimetable(data);
+                // Only re-render the row for better UX
+                renderTimetable(day);
+            }
+            timetableDayBtns.forEach(btn => {
+                btn.onclick = function () {
+                    timetableDayBtns.forEach(b => b.className = b.className.replace("bg-blue-100 text-blue-700", "bg-gray-100 text-gray-700"));
+                    btn.className = btn.className.replace("bg-gray-100 text-gray-700", "bg-blue-100 text-blue-700");
+                    currentDay = btn.getAttribute('data-day');
+                    renderTimetable(currentDay);
+                };
+            });
+            // Reset timetable
+            document.getElementById('reset-timetable').onclick = function () {
+                if (confirm("Reset timetable to default? This cannot be undone.")) {
+                    localStorage.setItem(TIMETABLE_KEY, JSON.stringify(defaultTimetable));
+                    localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(defaultTimetable));
+                    renderTimetable(currentDay);
+                    showTimetableMessage("Timetable reset to default.");
+                }
+            };
+            // Export timetable (exports the current edited version as JSON)
+            document.getElementById('export-timetable').onclick = function () {
+                const data = loadTimetable();
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "timetable.json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showTimetableMessage("Timetable exported.");
+            };
+            // Export timetable as CSV
+            document.getElementById('export-timetable-csv').onclick = function () {
+                const data = loadTimetable();
+                let csv = "Day,Slot,Time,Subject,Room,Lecturer\n";
+                days.forEach(day => {
+                    data[day].forEach(row => {
+                        // Escape commas and quotes
+                        const safe = arr => arr.map(x => `"${(x || "").replace(/"/g, '""')}"`);
+                        csv += [day, ...safe(row)].join(",") + "\n";
+                    });
+                });
+                const blob = new Blob([csv], { type: "text/csv" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "timetable.csv";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showTimetableMessage("CSV exported.");
+            };
+            // Import timetable (JSON or CSV)
+            document.getElementById('import-timetable-btn').onclick = function () {
+                // Show instructions box
+                const instr = document.getElementById('import-instructions');
+                instr.classList.remove('hidden');
+                // Hide after 10 seconds or when file dialog closes
+                setTimeout(() => instr.classList.add('hidden'), 10000);
+                document.getElementById('import-timetable').click();
+            };
+            document.getElementById('import-timetable').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                // Hide instructions box when file selected
+                document.getElementById('import-instructions').classList.add('hidden');
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    const text = ev.target.result;
+                    if (file.name.endsWith('.json')) {
+                        try {
+                            const imported = JSON.parse(text);
+                            // Basic validation
+                            if (typeof imported === "object" && days.every(day => Array.isArray(imported[day]) && imported[day].length === 12)) {
+                                localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(imported));
+                                renderTimetable(currentDay);
+                                showTimetableMessage("Timetable imported successfully.");
+                            } else {
+                                showTimetableMessage("Invalid timetable format.", true);
+                            }
+                        } catch {
+                            showTimetableMessage("Failed to import timetable.", true);
+                        }
+                    } else if (file.name.endsWith('.csv')) {
+                        // Parse CSV
+                        const lines = text.split(/\r?\n/).filter(Boolean);
+                        if (!lines.length) return showTimetableMessage("CSV is empty.", true);
+                        const header = lines[0].split(',').map(h => h.trim().toLowerCase());
+                        // Must have: day,slot,time,subject,room,lecturer
+                        if (!["day", "slot", "time", "subject", "room", "lecturer"].every(h => header.includes(h))) {
+                            return showTimetableMessage("CSV header must include: Day,Slot,Time,Subject,Room,Lecturer", true);
+                        }
+                        const idx = name => header.indexOf(name);
+                        const imported = {};
+                        days.forEach(day => imported[day] = Array.from({ length: 12 }, (_, i) => [
+                            timetableSlots[i], slotTimes[i], "", "", ""
+                        ]));
+                        for (let i = 1; i < lines.length; ++i) {
+                            const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(cell => cell.replace(/^"|"$/g, '').replace(/""/g, '"'));
+                            if (row.length < 6) continue;
+                            const day = row[idx("day")];
+                            const slot = row[idx("slot")];
+                            const time = row[idx("time")];
+                            if (!imported[day]) continue;
+                            // Find slot index by slot name or time
+                            let slotIdx = imported[day].findIndex(r => r[0] === slot || r[1] === time);
+                            if (slotIdx === -1) slotIdx = imported[day].findIndex(r => !r[2] && !r[3] && !r[4]);
+                            if (slotIdx === -1) continue;
+                            imported[day][slotIdx] = [
+                                slot || timetableSlots[slotIdx],
+                                time || slotTimes[slotIdx],
+                                row[idx("subject")],
+                                row[idx("room")],
+                                row[idx("lecturer")]
+                            ];
+                        }
+                        localStorage.setItem(TIMETABLE_EDIT_KEY, JSON.stringify(imported));
+                        renderTimetable(currentDay);
+                        showTimetableMessage("CSV imported successfully.");
+                    } else {
+                        showTimetableMessage("Unsupported file type. Use .json or .csv", true);
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = "";
+            });
+            function showTimetableMessage(msg, error) {
+                const el = document.getElementById('timetable-message');
+                el.textContent = msg;
+                el.className = "mt-2 font-semibold " + (error ? "text-red-600" : "text-green-600");
+                el.classList.remove('hidden');
+                setTimeout(() => el.classList.add('hidden'), 2500);
+            }
+            // Initial render
+            document.addEventListener('DOMContentLoaded', function () {
+                // On load, if TIMETABLE_EDIT_KEY is missing, copy from TIMETABLE_KEY
+                if (!localStorage.getItem(TIMETABLE_EDIT_KEY)) {
+                    const base = localStorage.getItem(TIMETABLE_KEY);
+                    if (base) localStorage.setItem(TIMETABLE_EDIT_KEY, base);
+                }
+                renderTimetable(currentDay);
+            });
+        </script>
+
+        <!-- Timetable Statistics & Comparison -->
+        <section class="profile-card mb-6">
+            <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                Timetable Statistics & Comparison
+                <button id="refresh-timetable-stats"
+                    class="ml-2 px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+                    title="Refresh statistics">
+                    <i class="bx bx-refresh"></i> Refresh
+                </button>
+            </h2>
+            <div id="timetable-stats-content" class="space-y-2 text-sm md:text-base">
+                <!-- Stats will be rendered by JS -->
+            </div>
+        </section>
+        <script>
+            // --- Timetable Statistics Calculation & Live Update (with more details) ---
+            function getTimetableStats() {
+                const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+                const data = JSON.parse(localStorage.getItem('timetableTabbedDataEdit')) || {};
+                const coursePeriods = {};
+                const lecturerPeriods = {};
+                const roomPeriods = {};
+                let totalPeriods = 0;
+                let totalFree = 0;
+                let totalSlots = 0;
+                const dayStats = {};
+                days.forEach(day => {
+                    if (!data[day]) return;
+                    let dayPeriods = 0, dayFree = 0, dayCourses = new Set(), dayLecturers = new Set(), dayRooms = new Set();
+                    data[day].forEach(row => {
+                        totalSlots++;
+                        const subject = (row[2] || "").trim();
+                        const room = (row[3] || "").trim();
+                        const lecturer = (row[4] || "").trim();
+                        if (subject) {
+                            coursePeriods[subject] = (coursePeriods[subject] || 0) + 1;
+                            dayCourses.add(subject);
+                            totalPeriods++;
+                            dayPeriods++;
+                        } else {
+                            totalFree++;
+                            dayFree++;
+                        }
+                        if (lecturer) {
+                            lecturerPeriods[lecturer] = (lecturerPeriods[lecturer] || 0) + 1;
+                            dayLecturers.add(lecturer);
+                        }
+                        if (room) {
+                            roomPeriods[room] = (roomPeriods[room] || 0) + 1;
+                            dayRooms.add(room);
+                        }
+                    });
+                    dayStats[day] = {
+                        periods: dayPeriods,
+                        free: dayFree,
+                        courses: Array.from(dayCourses),
+                        lecturers: Array.from(dayLecturers),
+                        rooms: Array.from(dayRooms)
+                    };
+                });
+                // Most/least frequent
+                let most = null, least = null, max = 0, min = Infinity;
+                Object.entries(coursePeriods).forEach(([course, count]) => {
+                    if (count > max) { max = count; most = course; }
+                    if (count < min) { min = count; least = course; }
+                });
+                // Most/least busy day
+                let busiestDay = null, leastBusyDay = null, maxDay = 0, minDay = Infinity;
+                days.forEach(day => {
+                    if (dayStats[day].periods > maxDay) { maxDay = dayStats[day].periods; busiestDay = day; }
+                    if (dayStats[day].periods < minDay) { minDay = dayStats[day].periods; leastBusyDay = day; }
+                });
+                // Most/least used lecturer
+                let topLecturer = null, topLecturerCount = 0;
+                let leastLecturer = null, leastLecturerCount = Infinity;
+                Object.entries(lecturerPeriods).forEach(([lect, count]) => {
+                    if (count > topLecturerCount) { topLecturerCount = count; topLecturer = lect; }
+                    if (count < leastLecturerCount) { leastLecturerCount = count; leastLecturer = lect; }
+                });
+                // Most/least used room
+                let topRoom = null, topRoomCount = 0;
+                let leastRoom = null, leastRoomCount = Infinity;
+                Object.entries(roomPeriods).forEach(([room, count]) => {
+                    if (count > topRoomCount) { topRoomCount = count; topRoom = room; }
+                    if (count < leastRoomCount) { leastRoomCount = count; leastRoom = room; }
+                });
+                return {
+                    coursePeriods,
+                    lecturerPeriods,
+                    roomPeriods,
+                    totalPeriods,
+                    totalFree,
+                    totalSlots,
+                    most,
+                    mostCount: max,
+                    least,
+                    leastCount: min === Infinity ? 0 : min,
+                    dayStats,
+                    busiestDay,
+                    busiestDayCount: maxDay,
+                    leastBusyDay,
+                    leastBusyDayCount: minDay === Infinity ? 0 : minDay,
+                    topLecturer,
+                    topLecturerCount,
+                    leastLecturer,
+                    leastLecturerCount: leastLecturerCount === Infinity ? 0 : leastLecturerCount,
+                    topRoom,
+                    topRoomCount,
+                    leastRoom,
+                    leastRoomCount: leastRoomCount === Infinity ? 0 : leastRoomCount
+                };
+            }
+            function renderTimetableStats() {
+                const stats = getTimetableStats();
+                const el = document.getElementById('timetable-stats-content');
+                if (!el) return;
+                let html = '';
+                html += `<div class="flex flex-wrap gap-4">
+        <div class="bg-blue-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-blue-700">Total slots:</span>
+            <span class="text-blue-900 font-bold">${stats.totalSlots}</span>
+        </div>
+        <div class="bg-green-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-green-700">Scheduled periods:</span>
+            <span class="text-green-900 font-bold">${stats.totalPeriods}</span>
+        </div>
+        <div class="bg-yellow-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-yellow-700">Free periods:</span>
+            <span class="text-yellow-900 font-bold">${stats.totalFree}</span>
+        </div>
+        <div class="bg-purple-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-purple-700">Unique courses:</span>
+            <span class="text-purple-900 font-bold">${Object.keys(stats.coursePeriods).length}</span>
+        </div>
+        <div class="bg-pink-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-pink-700">Unique lecturers:</span>
+            <span class="text-pink-900 font-bold">${Object.keys(stats.lecturerPeriods).length}</span>
+        </div>
+        <div class="bg-indigo-50 rounded-lg px-4 py-2 shadow-sm flex-1 min-w-[180px]">
+            <span class="font-semibold text-indigo-700">Unique rooms:</span>
+            <span class="text-indigo-900 font-bold">${Object.keys(stats.roomPeriods).length}</span>
+        </div>
+    </div>`;
+                html += `<div class="mt-4">
+        <span class="font-semibold">Course-wise periods per week:</span>
+        <ul class="list-inside list-disc mt-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">` +
+                    Object.entries(stats.coursePeriods).map(([course, count]) =>
+                        `<li class="pl-2"><span class="font-bold text-blue-700">${course}</span>: <span class="font-semibold">${count}</span> period${count > 1 ? 's' : ''}</li>`
+                    ).join('') +
+                    `</ul>
+    </div>`;
+                // Add margin between categories
+                html += `<div style="margin: 1.5rem 0;"></div>`;
+                html += `<div class="mt-2">
+        <span class="font-bold text-base">Lecturer-wise periods per week:</span>
+        <ul class="list-inside list-disc mt-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">` +
+                    Object.entries(stats.lecturerPeriods).map(([lect, count]) =>
+                        `<li class="pl-2"><span class="font-bold text-pink-700">${lect}</span>: <span class="font-semibold">${count}</span> period${count > 1 ? 's' : ''}</li>`
+                    ).join('') +
+                    `</ul>
+    </div>`;
+                html += `<div style="margin: 1.5rem 0;"></div>`;
+                html += `<div class="mt-2">
+        <span class="font-bold text-base">Room usage per week:</span>
+        <ul class="list-inside list-disc mt-1 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1">` +
+                    Object.entries(stats.roomPeriods).map(([room, count]) =>
+                        `<li class="pl-2"><span class="font-bold text-indigo-700">${room}</span>: <span class="font-semibold">${count}</span> period${count > 1 ? 's' : ''}</li>`
+                    ).join('') +
+                    `</ul>
+    </div>`;
+                html += `<div style="margin: 1.5rem 0;"></div>`;
+                if (stats.most) {
+                    html += `<div class="mt-2"><span class="font-bold text-base">Most frequent course:</span> <span class="text-green-700 font-bold">${stats.most}</span> <span class="text-gray-700">(${stats.mostCount} periods)</span></div>`;
+                }
+                if (stats.least) {
+                    html += `<div><span class="font-bold text-base">Least frequent course:</span> <span class="text-red-700 font-bold">${stats.least}</span> <span class="text-gray-700">(${stats.leastCount} period${stats.leastCount > 1 ? 's' : ''})</span></div>`;
+                }
+                if (stats.topLecturer) {
+                    html += `<div class="mt-2"><span class="font-bold text-base">Most scheduled lecturer:</span> <span class="text-pink-700 font-bold">${stats.topLecturer}</span> <span class="text-gray-700">(${stats.topLecturerCount} periods)</span></div>`;
+                }
+                if (stats.leastLecturer) {
+                    html += `<div><span class="font-bold text-base">Least scheduled lecturer:</span> <span class="text-pink-700 font-bold">${stats.leastLecturer}</span> <span class="text-gray-700">(${stats.leastLecturerCount} period${stats.leastLecturerCount > 1 ? 's' : ''})</span></div>`;
+                }
+                if (stats.topRoom) {
+                    html += `<div class="mt-2"><span class="font-bold text-base">Most used room:</span> <span class="text-indigo-700 font-bold">${stats.topRoom}</span> <span class="text-gray-700">(${stats.topRoomCount} periods)</span></div>`;
+                }
+                if (stats.leastRoom) {
+                    html += `<div><span class="font-bold text-base">Least used room:</span> <span class="text-indigo-700 font-bold">${stats.leastRoom}</span> <span class="text-gray-700">(${stats.leastRoomCount} period${stats.leastRoomCount > 1 ? 's' : ''})</span></div>`;
+                }
+                html += `<div class="mt-2"><span class="font-bold text-base">Free period percentage:</span> <span class="font-bold">${stats.totalSlots ? ((stats.totalFree / stats.totalSlots) * 100).toFixed(1) : 0}%</span></div>`;
+                html += `<div style="margin: 1.5rem 0;"></div>`;
+                html += `<div class="mt-4">
+        <span class="font-bold text-base">Day-wise summary:</span>
+        <table class="min-w-full mt-2 text-xs md:text-sm bg-white dark:bg-gray-900 rounded-lg table-fixed border border-gray-200 timetable-stats-table">
+            <thead>
+                <tr>
+                    <th class="py-2 px-2 text-left">Day</th>
+                    <th class="py-2 px-2 text-left">Periods</th>
+                    <th class="py-2 px-2 text-left">Free</th>
+                    <th class="py-2 px-2 text-left">Courses</th>
+                    <th class="py-2 px-2 text-left">Lecturers</th>
+                    <th class="py-2 px-2 text-left">Rooms</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${Object.entries(stats.dayStats).map(([day, d], idx, arr) =>
+                    `<tr${idx !== 0 ? ' class="timetable-stats-row"' : ''}>
+                        <td class="py-1 px-2 font-semibold">${day}</td>
+                        <td class="py-1 px-2">${d.periods}</td>
+                        <td class="py-1 px-2">${d.free}</td>
+                        <td class="py-1 px-2">${d.courses.length ? d.courses.map(c => `<span class="bg-blue-100 text-blue-700 px-1 rounded">${c}</span>`).join(' ') : '-'}</td>
+                        <td class="py-1 px-2">${d.lecturers.length ? d.lecturers.map(l => `<span class="bg-pink-100 text-pink-700 px-1 rounded">${l}</span>`).join(' ') : '-'}</td>
+                        <td class="py-1 px-2">${d.rooms.length ? d.rooms.map(r => `<span class="bg-indigo-100 text-indigo-700 px-1 rounded">${r}</span>`).join(' ') : '-'}</td>
+                    </tr>`
+                ).join('')}
+            </tbody>
+        </table>
+    </div>`;
+                if (stats.busiestDay) {
+                    html += `<div class="mt-2"><span class="font-bold text-base">Busiest day:</span> <span class="text-blue-700 font-bold">${stats.busiestDay}</span> <span class="text-gray-700">(${stats.busiestDayCount} periods)</span></div>`;
+                }
+                if (stats.leastBusyDay) {
+                    html += `<div><span class="font-bold text-base">Least busy day:</span> <span class="text-blue-700 font-bold">${stats.leastBusyDay}</span> <span class="text-gray-700">(${stats.leastBusyDayCount} periods)</span></div>`;
+                }
+                el.innerHTML = html;
+            }
+            // Refresh stats on button click
+            document.getElementById('refresh-timetable-stats').onclick = renderTimetableStats;
+            // Refresh stats on DOMContentLoaded
+            document.addEventListener('DOMContentLoaded', renderTimetableStats);
+            // Refresh stats when timetable changes (live update)
+            function patchTimetableStatsLiveUpdate() {
+                // Patch updateTimetableCell to also refresh stats
+                if (window.updateTimetableCell) {
+                    const orig = window.updateTimetableCell;
+                    window.updateTimetableCell = function (...args) {
+                        orig.apply(this, args);
+                        renderTimetableStats();
+                    };
+                }
+            }
+            patchTimetableStatsLiveUpdate();
+            // Also refresh stats when timetable changes from other tabs/windows
+            window.addEventListener('storage', function (e) {
+                if (e.key === 'timetableTabbedDataEdit') renderTimetableStats();
+            });
+        </script>
+        <style>
+            /* Attractive timetable table styles */
+            #timetable-table tr {
+                transition: background 0.2s, box-shadow 0.2s;
+            }
+
+            #timetable-table tr:hover {
+                background: #e0f2fe;
+                box-shadow: 0 2px 8px 0 #bae6fd;
+            }
+
+            #timetable-table td,
+            #timetable-table th {
+                border-radius: 0.5rem;
+                border-bottom: 1px solid #e5e7eb;
+                vertical-align: middle;
+            }
+
+            #timetable-table td[contenteditable="true"]:focus {
+                outline: 2px solid #3b82f6;
+                background: #f0f9ff;
+            }
+
+            #timetable-table td {
+                background: #f9fafb;
+                transition: background 0.2s;
+            }
+
+            #timetable-table th {
+                background: linear-gradient(90deg, #3b82f6 80%, #60a5fa 100%);
+                color: #fff;
+                font-weight: 700;
+                letter-spacing: 0.02em;
+            }
+
+            @media (max-width: 640px) {
+
+                #timetable-table td,
+                #timetable-table th {
+                    font-size: 0.85rem;
+                    padding: 0.5rem 0.25rem;
+                }
+            }
+
+            /* Add margin between categories in stats table */
+            .timetable-stats-table tbody tr.timetable-stats-row {
+                border-top: 12px solid transparent;
+            }
+        </style>
+
+        <!-- Social Links Section (inside profile details, attractive with animation) -->
+        <div class="mt-6 flex flex-col items-center gap-2 animate-fade-in" id="profile-social-links">
+            <h3 class="text-lg font-bold text-blue-700 flex items-center gap-2 animate-slide-down">
+                <i class="bx bx-share-alt text-2xl animate-bounce"></i>
+                Connect with Me
+            </h3>
+            <div class="flex gap-2 mt-2 flex-wrap justify-center">
+                <a href="mailto:alex.johnson@college.edu" target="_blank" rel="noopener"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-blue-100 text-blue-700 rounded-full p-2 shadow-md hover:bg-blue-200 animate-pop-in"
+                    title="Email">
+                    <i class="bx bx-envelope text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-blue-600 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">Email</span>
+                </a>
+                <a href="https://linkedin.com/in/alexjohnson" target="_blank" rel="noopener"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-blue-50 text-blue-800 rounded-full p-2 shadow-md hover:bg-blue-100 animate-pop-in"
+                    title="LinkedIn">
+                    <i class="bx bxl-linkedin text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-blue-700 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">LinkedIn</span>
+                </a>
+                <a href="https://github.com/alexjohnson" target="_blank" rel="noopener"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-gray-100 text-gray-800 rounded-full p-2 shadow-md hover:bg-gray-200 animate-pop-in"
+                    title="GitHub">
+                    <i class="bx bxl-github text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">GitHub</span>
+                </a>
+                <a href="https://twitter.com/alexjohnson" target="_blank" rel="noopener"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-blue-200 text-blue-900 rounded-full p-2 shadow-md hover:bg-blue-300 animate-pop-in"
+                    title="Twitter">
+                    <i class="bx bxl-twitter text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-blue-500 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">Twitter</span>
+                </a>
+                <a href="https://wa.me/15551234567" target="_blank" rel="noopener"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-green-100 text-green-700 rounded-full p-2 shadow-md hover:bg-green-200 animate-pop-in"
+                    title="WhatsApp">
+                    <i class="bx bxl-whatsapp text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-green-600 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">WhatsApp</span>
+                </a>
+                <button id="copy-profile-link"
+                    class="group relative transition-all duration-300 hover:-translate-y-1 hover:scale-105 bg-yellow-100 text-yellow-700 rounded-full p-2 shadow-md hover:bg-yellow-200 animate-pop-in focus:outline-none"
+                    title="Copy Profile Link">
+                    <i class="bx bx-link text-xl group-hover:animate-bounce"></i>
+                    <span
+                        class="absolute left-1/2 -bottom-6 -translate-x-1/2 opacity-0 group-hover:opacity-100 bg-yellow-600 text-white text-[10px] rounded px-1.5 py-0.5 shadow transition-all duration-200 pointer-events-none">Copy
+                        Link</span>
+                </button>
+            </div>
+            <span class="text-[11px] text-gray-500 mt-1 animate-fade-in flex items-center gap-1">
+                <i class="bx bx-info-circle text-blue-400"></i>
+                Feel free to contact me anytime!
+            </span>
+            <span id="copy-link-msg" class="hidden mt-1 text-green-600 font-semibold animate-fade-in text-xs">Profile
+                link copied!</span>
+        </div>
+        <script>
+            // Copy profile link to clipboard with animation
+            document.getElementById('copy-profile-link').onclick = function () {
+                navigator.clipboard.writeText(window.location.href).then(function () {
+                    const msg = document.getElementById('copy-link-msg');
+                    msg.classList.remove('hidden');
+                    setTimeout(() => msg.classList.add('hidden'), 1800);
+                });
+            };
+        </script>
+        <style>
+            /* Social links hover glow and pulse */
+            #profile-social-links a,
+            #profile-social-links button {
+                box-shadow: 0 2px 8px 0 rgba(59, 130, 246, 0.07);
+                transition: box-shadow 0.2s, transform 0.2s;
+                position: relative;
+                overflow: visible;
+            }
+
+            #profile-social-links a:hover,
+            #profile-social-links button:hover,
+            #profile-social-links a:focus,
+            #profile-social-links button:focus {
+                box-shadow: 0 4px 16px 0 rgba(59, 130, 246, 0.13), 0 0 0 2px rgba(59, 130, 246, 0.06);
+                z-index: 2;
+            }
+
+            #profile-social-links .group:hover .group-hover\:animate-bounce,
+            #profile-social-links .group:focus .group-hover\:animate-bounce {
+                animation: bounce 0.6s;
+            }
+
+            /* Tooltip animation */
+            #profile-social-links .group:hover span,
+            #profile-social-links .group:focus span {
+                opacity: 1 !important;
+                pointer-events: auto;
+                transform: translate(-50%, -6px) scale(1.03);
+            }
+
+            /* Small info spans for user info area buttons */
+            .profile-info-btn {
+                position: relative;
+                cursor: pointer;
+                background: none;
+                border: none;
+                padding: 0 2px;
+                margin-left: 2px;
+                color: #3b82f6;
+                font-size: 1rem;
+                vertical-align: middle;
+            }
+
+            .profile-info-btn .profile-info-tooltip {
+                position: absolute;
+                left: 50%;
+                bottom: -1.5em;
+                transform: translateX(-50%);
+                opacity: 0;
+                background: #3b82f6;
+                color: #fff;
+                font-size: 10px;
+                padding: 2px 7px;
+                border-radius: 6px;
+                white-space: nowrap;
+                pointer-events: none;
+                transition: opacity 0.18s, transform 0.18s;
+                z-index: 10;
+            }
+
+            .profile-info-btn:hover .profile-info-tooltip,
+            .profile-info-btn:focus .profile-info-tooltip {
+                opacity: 1;
+                transform: translateX(-50%) translateY(-3px) scale(1.04);
+                pointer-events: auto;
+            }
+        </style>
+        <script>
+            // Add tooltip spans for all edit/info buttons in user info area
+            document.addEventListener('DOMContentLoaded', function () {
+                // Map: button id => tooltip text
+                const infoButtons = [
+                    { id: 'edit-department', text: 'Edit Department' },
+                    { id: 'edit-college', text: 'Edit College' },
+                    { id: 'edit-studentid', text: 'Edit Student ID' },
+                    { id: 'edit-portfolio', text: 'Edit Portfolio' }
+                ];
+                infoButtons.forEach(btn => {
+                    const el = document.getElementById(btn.id);
+                    if (el && !el.classList.contains('profile-info-btn')) {
+                        el.classList.add('profile-info-btn');
+                        // Only add tooltip if not already present
+                        if (!el.querySelector('.profile-info-tooltip')) {
+                            const span = document.createElement('span');
+                            span.className = 'profile-info-tooltip';
+                            span.textContent = btn.text;
+                            el.appendChild(span);
+                        }
+                    }
+                });
+            });
+        </script>
+        </style>
+
+
+</html>
